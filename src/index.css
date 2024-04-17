@@ -1,0 +1,38 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: black;
+  color: white;
+  font-family: cursive;
+  height: auto;
+}
+ul {
+  list-style: none;
+}
+a {
+  text-decoration: none;
+}
+button,
+input {
+  border: none;
+  outline: none;
+}
+/* Responsive start */
+.container {
+  margin: auto;
+  max-width: 93%;
+  height: auto;
+}
+
+/* Responsive end */
+
+::selection {
+  background-color: red;
+  color: black;
+}
+body::-webkit-scrollbar {
+  display: none;
+}
