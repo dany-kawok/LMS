@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import { styled } from "styled-components";
 import { Outlet } from "react-router-dom";
 const Layout = () => {
+  console.log("sss");
   return (
     <>
       <BackgroundContainer>
@@ -18,7 +19,7 @@ const Layout = () => {
 };
 
 const BackgroundContainer = styled.div`
-  background-image: url("../public/landing-img.jpg");
+  background-image: url("landing-img.jpg");
   background-size: cover;
   background-position: center;
   height: 100dvh;
