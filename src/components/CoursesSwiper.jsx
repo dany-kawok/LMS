@@ -35,6 +35,28 @@ const CoursesSwiper = () => {
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
+          breakpoints={{
+            0: {
+              // screens 0px and up
+              slidesPerView: 1,
+              spaceBetween: 10,
+            },
+            640: {
+              // screens 640px and up
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            768: {
+              // screens 768px and up
+              slidesPerView: 3,
+              spaceBetween: 30,
+            },
+            1024: {
+              // screens 1024px and up
+              slidesPerView: 4,
+              spaceBetween: 40,
+            },
+          }}
         >
           {randomCourses.map((course, index) => (
             <SwiperSlide key={index}>
