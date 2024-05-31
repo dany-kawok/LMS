@@ -22,19 +22,26 @@ const Container = styled.div`
 `;
 const AuthPanel = styled.div`
   border-radius: 5px;
-  width: 35%;
-  height: 360px;
-  padding: 10px 20px;
-  text-align: center;
+  width: 70%;
+  height: fit-content;
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
   background-color: rgba(0, 0, 0, 0.75);
-  @media (max-width: 992px) {
+  @media (min-width: 768px) {
     padding: 10px;
-    width: 80%;
+    width: 60%;
+  }
+  @media (min-width: 992px) {
+    padding: 10px;
+    width: 40%;
   }
 `;
 const Title = styled.h1`
-  font-size: 40px;
+  font-size: 30px;
   font-weight: 600;
 `;
 export default Auth;

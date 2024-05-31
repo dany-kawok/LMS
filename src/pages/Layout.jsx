@@ -1,31 +1,67 @@
+import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import { styled } from "styled-components";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import Auth from "../components/Auth";
+import styled from "styled-components";
+import { Toaster } from "react-hot-toast";
+import CoursesSwiper from "../components/CoursesSwiper";
+
 const Layout = () => {
-  console.log("sss");
+  const { pathname } = useLocation();
+  const isAuthRoute = pathname.startsWith("/auth");
+
+  const [bgImage, setBgImage] = useState(null);
+
+  useEffect(() => {
+    // Fetch the background image dynamically
+    const fetchBgImage = async () => {
+      try {
+        const response = await fetch("bg-image.jpg"); // Replace "bg-image.jpg" with the path to your image
+        if (response.ok) {
+          setBgImage(`url(${response.url})`);
+        } else {
+          console.error("Failed to fetch background image");
+        }
+      } catch (error) {
+        console.error("Error fetching background image:", error);
+      }
+    };
+
+    fetchBgImage();
+  }, []);
+
+  return (
+    <BackgroundContainer>
+      <Header />
+      <ContentWrapper>
+        {isAuthRoute ? <Auth /> : <MainContent />}
+      </ContentWrapper>
+      <Footer />
+      <Toaster />
+    </BackgroundContainer>
+  );
+};
+
+const MainContent = () => {
+  const { pathname } = useLocation();
+
   return (
     <>
-      <BackgroundContainer>
-        <Header />
-        <ContentWrapper>
-          <Outlet />
-        </ContentWrapper>
-        <Footer />
-      </BackgroundContainer>
-      {/* here you can add any content after the main background */}
+      <Outlet />
+      {pathname === "/" ? <CoursesSwiper /> : null}
     </>
   );
 };
 
 const BackgroundContainer = styled.div`
-  background-image: url("landing-img.jpg");
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   background-size: cover;
   background-position: center;
-  height: 100dvh;
   width: 100%;
   position: relative;
-  overflow: hidden;
   z-index: 0;
   &::after {
     content: "";
@@ -39,8 +75,9 @@ const BackgroundContainer = styled.div`
     z-index: -1;
   }
 `;
+
 const ContentWrapper = styled.div`
-  flex: 1; /* Take up remaining vertical space */
+  flex: 1;
 `;
 
 export default Layout;

@@ -1,0 +1,18 @@
+.course-container {
+  padding: 40px;
+}
+
+.course-content {
+  display: flex;
+  align-items: flex-start; /* Align items at the start of the container */
+}
+
+.course-image {
+  max-width: 200px; /* Adjust the max-width as needed */
+  margin-right: 20px; /* Margin to the right of the image */
+}
+
+.course-title {
+  text-decoration: underline;
+  font-size: 2rem;
+}

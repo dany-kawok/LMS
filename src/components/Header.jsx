@@ -1,89 +1,150 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { useEffect, useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../redux/features/auth/authSlice";
+import { authApiSlice } from "../redux/features/auth/authApiSlice";
+import toast from "react-hot-toast";
+import MemberNav from "./MemberNav"; // Import MemberNav
 
 const Header = () => {
   const [openMenu, setOpenMenu] = useState(false);
-  const SearchInputRef = useRef();
+  const searchInputRef = useRef();
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const navigate = useNavigate(); // Use useNavigate instead of useHistory
+
   const links = [
     { title: "Home", link: "/" },
-    { title: "Genre", link: "/genre" },
-    { title: "Tv Shows", link: "/tv-shows" },
-    { title: "Movies", link: "/movies" },
+    { title: "Categories", link: "/categories" },
+    { title: "Courses", link: "/courses" },
+    { title: "Tutors", link: "/tutors" },
     { title: "Contact", link: "/contact" },
   ];
+
   useEffect(() => {
-    SearchInputRef.current?.focus();
+    searchInputRef.current?.focus();
   }, []);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const searchTerm = searchInputRef.current.value.trim();
+    if (searchTerm) {
+      navigate(
+        `/coursesSearchResults?search=${encodeURIComponent(searchTerm)}`
+      );
+    }
+  };
+
   return (
     <>
-      <Container className="container">
-        <LogoSection>
-          <BarsBtnContainer
-            onClick={() => {
-              setOpenMenu(!openMenu);
-            }}
-          >
-            <BarsBtn open={openMenu}></BarsBtn>
-          </BarsBtnContainer>
-          <LogoItem>
-            <Link to="/">
-              Movies<span>.hd</span>
-            </Link>
-          </LogoItem>
-        </LogoSection>
-        <Nav open={openMenu}>
-          <Menu>
-            <MenuList>
-              {links.map((link, i) => (
-                <Link key={i} to={link.link}>
-                  {link.title}
-                </Link>
-              ))}
-            </MenuList>
-          </Menu>
-        </Nav>
-        <AuthSection>
-          <SearchContainer>
-            <Form>
-              <SearchInput
-                type="text"
-                required
-                name="search"
-                placeholder="Search Movie"
-                ref={SearchInputRef}
-              />
-              <SearchBtn type="submit">
-                <MagnifyingGlassIcon />
-              </SearchBtn>
-            </Form>
-          </SearchContainer>
-          <AuthBtn>
-            <Link to="/auth/login">Sign In</Link>
-          </AuthBtn>
-        </AuthSection>
-      </Container>
+      <HeaderContainer>
+        <Container className="container">
+          <LogoSection>
+            <BarsBtnContainer
+              onClick={() => {
+                setOpenMenu(!openMenu);
+              }}
+            >
+              <BarsBtn open={openMenu}></BarsBtn>
+            </BarsBtnContainer>
+            <LogoItem>
+              <Link to="/">Fast.Skill.Academy</Link>
+            </LogoItem>
+          </LogoSection>
+          <Nav open={openMenu} onClick={() => setOpenMenu(false)}>
+            <Menu>
+              <MenuList>
+                {links.map((link, i) => (
+                  <Link
+                    key={i}
+                    to={link.link}
+                    onClick={() => {
+                      setOpenMenu(!openMenu);
+                    }}
+                  >
+                    {link.title}
+                  </Link>
+                ))}
+              </MenuList>
+            </Menu>
+          </Nav>
+          <AuthSection>
+            <SearchContainer>
+              <Form onSubmit={handleSearchSubmit}>
+                <SearchInput
+                  type="text"
+                  required
+                  name="courseSearchResults"
+                  placeholder="Search Course"
+                  ref={searchInputRef}
+                />
+                <SearchBtn type="submit">
+                  <MagnifyingGlassIcon />
+                </SearchBtn>
+              </Form>
+            </SearchContainer>
+            {isAuthenticated ? (
+              <AuthBtn
+                onClick={async () => {
+                  const logoutResult = await dispatch(
+                    authApiSlice.endpoints.logoutAPI.initiate()
+                  );
+
+                  if (logoutResult.data) {
+                    dispatch(logout());
+                    toast.success("Signed out successfully!");
+
+                    console.log("Logged out successfully");
+                  } else {
+                    console.error("Failed to log out");
+                    toast.error("Failed to log out.");
+                  }
+                }}
+              >
+                <Link to="/">Sign Out</Link>
+              </AuthBtn>
+            ) : (
+              <AuthBtn>
+                <Link to="/auth/login">Sign In</Link>
+              </AuthBtn>
+            )}
+          </AuthSection>
+        </Container>
+        {isAuthenticated && <MemberNav />}{" "}
+        {/* Conditionally render MemberNav as a second header */}
+      </HeaderContainer>
     </>
   );
 };
+
+// Styled Components
+const HeaderContainer = styled.div`
+  width: 100%;
+`;
+
 const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  padding: 30px 0px;
+  padding: 10px 0px;
+  width: 100vw;
+
   @media (max-width: 768px) {
-    justify-content: center;
-    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
     gap: 15px;
     position: relative;
   }
 `;
+
 const LogoSection = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
+  z-index: 10;
 
   a {
     font-family: "Monoton", sans-serif;
@@ -93,23 +154,27 @@ const LogoSection = styled.div`
     align-items: center;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: red;
+    color: #fff;
     @media (max-width: 768px) {
-      font-size: 2rem;
+      font-size: 1.4rem;
     }
   }
 `;
+
 const AuthSection = styled.div`
   display: flex;
+  justify-content: space-around;
   position: relative;
   align-content: center;
   gap: 15px;
+  z-index: 10;
+
   @media (max-width: 568px) {
     flex-direction: column;
   }
 `;
+
 const BarsBtnContainer = styled.div`
-  /* z-index: 101; */
   cursor: pointer;
   height: 40px;
   width: 40px;
@@ -119,6 +184,7 @@ const BarsBtnContainer = styled.div`
   align-items: center;
   z-index: 201;
 `;
+
 const BarsBtn = styled.span`
   z-index: 100;
   width: 25px;
@@ -154,14 +220,19 @@ const BarsBtn = styled.span`
       `};
   }
 `;
+
 const LogoItem = styled.div``;
+
 const SearchContainer = styled.div``;
+
 const Form = styled.form`
   display: flex;
   justify-content: center;
   align-items: center;
+
   position: relative;
 `;
+
 const Nav = styled.nav`
   position: fixed;
   top: 0;
@@ -184,7 +255,9 @@ const Nav = styled.nav`
   align-items: center;
   transition: all 0.3s ease-out;
 `;
+
 const Menu = styled.ul``;
+
 const MenuList = styled.li`
   display: flex;
   justify-content: center;
@@ -196,11 +269,15 @@ const MenuList = styled.li`
     font-size: 2rem;
     transition: all 0.3s ease-in;
     &:hover {
-      color: red;
+      color: #1f7fc4;
       font-size: 2.3rem;
     }
   }
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
+
 const SearchInput = styled.input`
   border-radius: 20px;
   height: 40px;
@@ -211,6 +288,7 @@ const SearchInput = styled.input`
     color: #ffffff5e;
   }
 `;
+
 const SearchBtn = styled.button`
   color: white;
   background-color: transparent;
@@ -220,19 +298,24 @@ const SearchBtn = styled.button`
   position: absolute;
   right: 20px;
 `;
+
 const AuthBtn = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
 
-  a {
+  a,
+  button {
     text-decoration: none;
-    background-color: red;
+    background-color: #1f7fc4;
     padding: 10px;
     border-radius: 10px;
     font-weight: bold;
     color: white;
     cursor: pointer;
+    border: none;
   }
 `;
+
 export default Header;

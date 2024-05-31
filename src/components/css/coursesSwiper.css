@@ -1,0 +1,57 @@
+.courses-swiper {
+  /* margin-top: 10px; */
+}
+
+.courses-swiper-container {
+  height: 100vh; /* Set height to 100 viewport height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.course-card {
+  text-align: center;
+  /* border: 1px solid #ccc; */
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.course-image {
+  width: 200px; /* Set width for the images */
+  height: 200px; /* Set height for the images */
+  object-fit: cover; /* Ensure images maintain aspect ratio */
+  border-radius: 8px;
+  margin-bottom: 10px; /* Add some bottom margin for spacing */
+}
+
+.swiper-course-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: aliceblue;
+}
+
+.swiper-buttons {
+  margin: 10px 0; /* Add some top margin for spacing */
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+.swiper-buttons button {
+  padding: 20px;
+}
+
+.discover-button,
+.become-tutor-button {
+  font-family: cursive;
+  border-radius: 10px;
+  color: aliceblue;
+  background-color: #333;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+.become-tutor-button {
+  color: #333;
+  background-color: aliceblue;
+}

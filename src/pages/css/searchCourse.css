@@ -1,0 +1,49 @@
+.search-results-container {
+  display: flex;
+}
+
+.sidebar {
+  width: 25%;
+  padding: 20px;
+  color: #333;
+  background-color: transparent;
+}
+.by-category-section {
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 2px #333 solid;
+}
+
+.by-tutor-section {
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 2px #333 solid;
+}
+
+.course-list-container {
+  flex: 1;
+  padding: 20px;
+}
+
+.course-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.course-list-item {
+  width: 90%;
+  margin: 10px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  color: aliceblue;
+}
+
+.search-course-details {
+  display: flex;
+}
+
+.search-course-image {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}

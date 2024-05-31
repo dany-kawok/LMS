@@ -1,34 +1,31 @@
 import { Link } from "react-router-dom";
-import { styled } from "styled-components";
+import styled from "styled-components";
+
 const Footer = () => {
   return (
     <Container>
       <LogoItem>
-        <Link to="/">
-          Movies<span>.hd</span>
-        </Link>
+        <Link to="/">Fast Skill Academy</Link>
       </LogoItem>
-      <CopyRight>Copyright &copy; 2024 - Movies</CopyRight>
+      <CopyRight>Copyright &copy; 2024 - XTEAM</CopyRight>
     </Container>
   );
 };
 
 const Container = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
-  height: 10dvh;
-  width: 100%;
+  padding: 0 30px;
   background-color: black;
   opacity: 0.5;
-  position: fixed;
-  /* overflow: hidden; */
-
-  bottom: 0;
+  height: 10vh;
+  width: 100%;
   @media (max-width: 768px) {
     flex-direction: column;
   }
 `;
+
 const LogoItem = styled.div`
   a {
     font-family: "Monoton", sans-serif;
@@ -38,8 +35,10 @@ const LogoItem = styled.div`
     align-items: center;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: red;
+    color: #1f7fc4;
   }
 `;
+
 const CopyRight = styled.div``;
+
 export default Footer;
