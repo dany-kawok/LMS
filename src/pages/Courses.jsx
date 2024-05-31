@@ -59,20 +59,31 @@ const CourseList = styled.div`
   justify-content: center;
   align-items: center;
   gap: 30px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const CourseCard = styled.div`
   width: 250px;
   height: 250px;
-
   background-color: #282828;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   transition: transform 0.2s;
+
   &:hover {
     transform: scale(1.05);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
   }
 `;
 
