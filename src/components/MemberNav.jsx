@@ -3,10 +3,12 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { useGetLocationQuery } from "../redux/features/location/locationSlice";
+import ShoppingCartSidebar from "./ShoppingCartSidebar";
 
 const MemberNav = () => {
   const { data: locationData, error: locationError } = useGetLocationQuery();
   const [time, setTime] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Update the time every second
   useEffect(() => {
@@ -22,23 +24,33 @@ const MemberNav = () => {
     return () => clearInterval(timerId);
   }, []);
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
   return (
-    <MemberNavContainer>
-      <WelcomeMessage>
-        Welcome, Guest | {time} |{" "}
-        {locationData
-          ? `${locationData.city}, ${locationData.country}`
-          : locationError
-          ? "Location not available"
-          : "Loading location..."}
-      </WelcomeMessage>
-      <NavLinks>
-        <NavLink to="/dashboard">My Courses</NavLink>
-        <CartIcon>
-          <FaShoppingCart size={20} />
-        </CartIcon>
-      </NavLinks>
-    </MemberNavContainer>
+    <>
+      <MemberNavContainer>
+        <WelcomeMessage>
+          Welcome, Guest | {time} |{" "}
+          {locationData
+            ? `${locationData.city}, ${locationData.country}`
+            : locationError
+            ? "Location not available"
+            : "Loading location..."}
+        </WelcomeMessage>
+        <NavLinks>
+          <NavLink to="/dashboard">My Courses</NavLink>
+          <CartIcon onClick={toggleSidebar}>
+            <FaShoppingCart size={20} />
+          </CartIcon>
+        </NavLinks>
+      </MemberNavContainer>
+      <ShoppingCartSidebar
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
+    </>
   );
 };
 
@@ -54,6 +66,9 @@ const MemberNavContainer = styled.div`
 
 const WelcomeMessage = styled.span`
   font-size: 1rem;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const NavLinks = styled.div`

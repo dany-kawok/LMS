@@ -13,7 +13,22 @@ const Courses = () => {
     isError,
   } = useGetCoursesByCategoryQuery(categoryId);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) {
+    return (
+      <CoursesContainer>
+        <CourseTitle>{title}</CourseTitle>
+        <CourseList>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <SkeletonCourseCard key={index}>
+              <SkeletonCourseImage />
+              <SkeletonCourseName />
+            </SkeletonCourseCard>
+          ))}
+        </CourseList>
+      </CoursesContainer>
+    );
+  }
+
   if (isError) return <p>Error loading courses</p>;
 
   return (
@@ -97,4 +112,39 @@ const CourseName = styled.h2`
   margin: 10px 0;
   font-size: 1.2rem;
   color: #fff;
+`;
+
+// Skeleton components
+const SkeletonCourseCard = styled.div`
+  width: 250px;
+  height: 250px;
+  background-color: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+`;
+
+const SkeletonCourseImage = styled.div`
+  width: 100%;
+  height: 150px;
+  background-color: #444;
+  margin-bottom: 10px;
+`;
+
+const SkeletonCourseName = styled.div`
+  width: 80%;
+  height: 20px;
+  background-color: #444;
+  margin-top: 10px;
 `;
