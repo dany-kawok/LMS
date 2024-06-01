@@ -9,6 +9,7 @@ function CoursesSearchResults() {
   const searchText = searchParams.get("search");
   const [categories, setCategories] = useState([]);
   const [tutors, setTutors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const {
     data: searchResults,
@@ -27,6 +28,7 @@ function CoursesSearchResults() {
       });
       setCategories(Array.from(categorySet));
       setTutors(Array.from(tutorSet));
+      setLoading(false); // Set loading to false when data is fetched
     }
   }, [searchResults]);
 
@@ -61,9 +63,25 @@ function CoursesSearchResults() {
         )}
       </div>
       <div className="course-list-container">
-        {isLoading && <div>Loading...</div>}
-        {isError && <div>Error: {error}</div>}
-        {searchResults && (
+        {isLoading || loading ? ( // Check both isLoading and loading states
+          <div className="course-list loading-skeleton">
+            {[1, 2, 3].map(
+              (
+                index // Render placeholders for the skeleton
+              ) => (
+                <div key={index} className="loading-item">
+                  <div className="loading-image"></div>
+                  <div className="loading-details">
+                    <div className="loading-title"></div>
+                    <div className="loading-description"></div>
+                  </div>
+                </div>
+              )
+            )}
+          </div>
+        ) : isError ? ( // Render error message if an error occurs
+          <div>Error: {error}</div>
+        ) : (
           <div className="course-list" style={{ userSelect: "none" }}>
             {searchResults.map((course) => (
               <Link
