@@ -1,15 +1,26 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { useGetLocationQuery } from "../redux/features/location/locationSlice";
+import { useGetUserByIdQuery } from "../redux/features/users/usersSlice";
 import ShoppingCartSidebar from "./ShoppingCartSidebar";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 
 const MemberNav = () => {
   const { data: locationData, error: locationError } = useGetLocationQuery();
   const [time, setTime] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const accessToken = Cookies.get("accessToken");
+
+  const userId = accessToken ? jwtDecode(accessToken).UserInfo.id : null;
+  // console.log(userId);
+  const { data: userData, error: userError } = useGetUserByIdQuery(userId, {
+    skip: !userId, // Skip the query if userId is null
+  });
+  // console.log(userData);
   // Update the time every second
   useEffect(() => {
     const updateTime = () => {
@@ -32,7 +43,10 @@ const MemberNav = () => {
     <>
       <MemberNavContainer>
         <WelcomeMessage>
-          Welcome, Guest | {time} |{" "}
+          {userData
+            ? `Welcome, ${userData.first_name} ${userData.last_name} `
+            : "Welcome, Guest"}{" "}
+          | {time} |{" "}
           {locationData
             ? `${locationData.city}, ${locationData.country}`
             : locationError

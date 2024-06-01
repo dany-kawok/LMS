@@ -33,7 +33,7 @@ const CoursesSwiper = () => {
           className="courses-swiper"
           modules={[Autoplay]}
           autoplay={{
-            delay: 1500,
+            delay: `${isLoading ? 50000 : 1500}`,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
