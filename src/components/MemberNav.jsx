@@ -1,26 +1,45 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
 import { useGetLocationQuery } from "../redux/features/location/locationSlice";
 import { useGetUserByIdQuery } from "../redux/features/users/usersSlice";
 import ShoppingCartSidebar from "./ShoppingCartSidebar";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode"; // Import jwtDecode correctly
 
 const MemberNav = () => {
   const { data: locationData, error: locationError } = useGetLocationQuery();
   const [time, setTime] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const accessToken = Cookies.get("accessToken");
 
+  const isTokenExpired = (token) => {
+    if (!token) return true;
+    const decodedToken = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+    return decodedToken.exp < currentTime;
+  };
+
+  useEffect(() => {
+    if (isTokenExpired(accessToken)) {
+      Cookies.remove("accessToken");
+      if (location.pathname === "/") {
+        navigate("/");
+      } else {
+        navigate("/auth/login");
+      }
+    }
+  }, [accessToken, location.pathname, navigate]);
+
   const userId = accessToken ? jwtDecode(accessToken).UserInfo.id : null;
-  // console.log(userId);
   const { data: userData, error: userError } = useGetUserByIdQuery(userId, {
     skip: !userId, // Skip the query if userId is null
   });
-  // console.log(userData);
+
   // Update the time every second
   useEffect(() => {
     const updateTime = () => {

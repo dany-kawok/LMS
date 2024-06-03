@@ -1,9 +1,29 @@
-import { useLocation } from "react-router-dom";
-import "./css/SingleCourse.css"; // Import the CSS file
+import React, { useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import {
+  useAddToCartMutation,
+  useGetUserCartQuery,
+} from "../redux/features/sCart/sCartSlice";
+import { Toaster, toast } from "react-hot-toast";
+import "./css/SingleCourse.css";
 
 const SingleCourse = () => {
   const location = useLocation();
   const course = location.state?.course;
+  const [addToCart] = useAddToCartMutation();
+  const { data: cartItems = [], refetch } = useGetUserCartQuery();
+  const [isCourseAdded, setIsCourseAdded] = useState(false);
+
+  const handleAddToCart = async () => {
+    if (!cartItems.some((item) => item.courseId._id === course._id)) {
+      await addToCart(course._id);
+      refetch();
+      toast.success("Course added to cart");
+      setIsCourseAdded(true);
+    } else {
+      toast("Course already in cart", { icon: "ℹ️" });
+    }
+  };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -37,6 +57,7 @@ const SingleCourse = () => {
 
   return (
     <div className="course-container">
+      <Toaster />
       {course ? (
         <div className="course-content">
           <img className="course-image" src={course.image} alt={course.title} />
@@ -50,6 +71,18 @@ const SingleCourse = () => {
                 {renderStars(course.rating)}
                 <span className="rating-label"> ({course.rating})</span>
               </div>
+              {isCourseAdded ? (
+                <Link to="/dashboard" className="go-to-courses-button">
+                  Go to My Courses
+                </Link>
+              ) : (
+                <button
+                  className="add-to-cart-button"
+                  onClick={handleAddToCart}
+                >
+                  Add to Cart
+                </button>
+              )}
             </div>
           </div>
         </div>

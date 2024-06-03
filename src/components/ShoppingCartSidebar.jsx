@@ -1,11 +1,31 @@
-import React from "react";
+/* eslint-disable react/prop-types */
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { FaTimes } from "react-icons/fa";
-import { useGetAllCoursesQuery } from "../redux/features/courses/coursesSlice";
+import { FaTrash } from "react-icons/fa";
+
+import {
+  useGetUserCartQuery,
+  useRemoveFromCartMutation,
+  useClearCartMutation,
+} from "../redux/features/sCart/sCartSlice";
 
 const ShoppingCartSidebar = ({ isOpen, toggleSidebar }) => {
-  const { data: cartItems = [], isLoading } = useGetAllCoursesQuery(); // Replace this with your actual cart query
+  const { data: cartItems = [], isLoading, refetch } = useGetUserCartQuery();
+  const [removeFromCart] = useRemoveFromCartMutation();
+  const [clearCart] = useClearCartMutation();
+  console.log(cartItems);
+  const handleRemove = async (courseId) => {
+    await removeFromCart(courseId);
+    refetch();
+  };
+
+  const handleClearCart = async () => {
+    await clearCart();
+    refetch();
+  };
+
+  const total = cartItems.reduce((sum, item) => sum + item.price, 0);
 
   return (
     <>
@@ -38,12 +58,19 @@ const ShoppingCartSidebar = ({ isOpen, toggleSidebar }) => {
                   <CartItemTitle>{item.title}</CartItemTitle>
                   <CartItemPrice>${item.price}</CartItemPrice>
                 </CartItemDetails>
+                <RemoveButton onClick={() => handleRemove(item.courseId)}>
+                  <FaTrash /> {/* This is the delete icon */}
+                </RemoveButton>
               </CartItem>
             ))
           )}
         </SidebarContent>
         <SidebarFooter>
+          <TotalAmount>Total: ${total}</TotalAmount>
           <CheckoutButton to="/checkout">Check Out</CheckoutButton>
+          <ClearCartButton onClick={handleClearCart}>
+            Clear Cart
+          </ClearCartButton>
         </SidebarFooter>
       </SidebarContainer>
     </>
@@ -118,12 +145,16 @@ const SidebarContent = styled.div`
 
 const EmptyMessage = styled.p`
   text-align: center;
-  color: #666;
+  color: white;
 `;
 
 const CartItem = styled.div`
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #333;
 `;
 
 const CartItemImage = styled.img`
@@ -136,7 +167,8 @@ const CartItemImage = styled.img`
 const CartItemDetails = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
+  align-items: center;
 `;
 
 const CartItemTitle = styled.h3`
@@ -146,24 +178,64 @@ const CartItemTitle = styled.h3`
 
 const CartItemPrice = styled.p`
   margin: 0;
-  color: #666;
+  color: yellow;
+`;
+
+const RemoveButton = styled.button`
+  /* margin-top: 10px; */
+  /* padding: 5px 10px; */
+  width: 30px;
+  height: 30px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #ff3333;
+  }
 `;
 
 const SidebarFooter = styled.div`
   padding: 20px;
-  background-color: #f1f1f1;
+  background-color: #333;
   text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: end;
+`;
+
+const TotalAmount = styled.p`
+  margin: 0;
+  margin-bottom: 10px;
+  font-weight: bold;
 `;
 
 const CheckoutButton = styled(Link)`
   display: inline-block;
-  padding: 10px 20px;
+  padding: 10px 30px;
+  margin-right: 20px;
+  font-weight: bold;
+  border: 1px solid white;
   background-color: #333;
   color: white;
   text-decoration: none;
   border-radius: 5px;
   &:hover {
     background-color: #555;
+  }
+`;
+
+const ClearCartButton = styled.button`
+  margin-top: 10px;
+  padding: 10px 10px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #ff3333;
   }
 `;
 

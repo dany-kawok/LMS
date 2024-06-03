@@ -5,6 +5,7 @@ import { apiSlice } from "./api/apiSlice";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import authReducer from "../features/auth/authSlice";
 import { locationAndTimingApi } from "../features/location/locationSlice";
+import shoppingCartApi from "../features/sCart/sCartSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     [apiSlice.reducerPath]: apiSlice.reducer,
     locationAndTiming: locationAndTimingApi.reducer,
     [locationAndTimingApi.reducerPath]: locationAndTimingApi.reducer,
+    [shoppingCartApi.reducerPath]: shoppingCartApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(
