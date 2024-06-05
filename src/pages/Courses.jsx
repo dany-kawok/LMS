@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useGetCoursesByCategoryQuery } from "../redux/features/courses/coursesSlice";
 import styled from "styled-components"; // Using styled-components for styling

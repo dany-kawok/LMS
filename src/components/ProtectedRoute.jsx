@@ -1,13 +1,13 @@
-// src/components/ProtectedRoute.jsx
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const location = useLocation();
 
   if (!isAuthenticated) {
-    return <Navigate to="/auth/login" />;
+    return <Navigate to="/auth/login" state={{ from: location }} />;
   }
 
   return children;

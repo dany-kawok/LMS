@@ -7,7 +7,7 @@ const Footer = () => {
       <LogoItem>
         <Link to="/">Fast Skill Academy</Link>
       </LogoItem>
-      <CopyRight>Copyright &copy; 2024 - XTEAM</CopyRight>
+      <CopyRight>Copyright &copy; 2024 - Danny Kawok</CopyRight>
     </Container>
   );
 };

@@ -2,8 +2,8 @@
 import styled from "styled-components";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -15,11 +15,32 @@ import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/features/auth/authSlice"; // Import the login action
 import { toast } from "react-hot-toast";
+import checkTokenExpiration from "../utils/TokenValidity";
+
+import { logout } from "../redux/features/auth/authSlice";
+
 const Form = ({ action }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const accessToken = Cookies.get("accessToken");
+  const course = location.state?.course;
+  const redirectTo = location.state?.from?.pathname || "/";
   const [passwordShow, setPasswordShow] = useState(false);
   const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);
+
+  useEffect(() => {
+    if (accessToken) {
+      const isTokenValid = checkTokenExpiration(accessToken);
+
+      if (!isTokenValid) {
+        // Token is expired
+        Cookies.remove("accessToken");
+        dispatch(logout());
+        navigate("/auth/login");
+      }
+    }
+  }, [accessToken, dispatch, navigate]);
 
   const signUpSchema = z
     .object({
@@ -69,7 +90,7 @@ const Form = ({ action }) => {
     loginAPI,
     {
       isLoading: loginIsLoading,
-      data,
+
       // isError: loginIsError,
       // isSuccess: loginIsSccess,
       // error: loginError,
@@ -86,7 +107,7 @@ const Form = ({ action }) => {
           dispatch(login());
           toast.success("Signed up successfully!");
 
-          navigate("/");
+          navigate(redirectTo, course ? { state: { course: course } } : {});
         }
       } else if (action === "login") {
         const { data } = await loginAPI(formData);
@@ -96,7 +117,7 @@ const Form = ({ action }) => {
           dispatch(login());
           toast.success("Signed in successfully!");
 
-          navigate("/");
+          navigate(redirectTo, course ? { state: { course: course } } : {});
         }
       }
     } catch (error) {

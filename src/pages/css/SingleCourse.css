@@ -72,7 +72,9 @@
   margin-left: 8px;
   font-size: 18px;
 }
-.add-to-cart-button {
+.add-to-cart-button,
+.go-to-courses-button,
+.login-to-purchase-button {
   padding: 15px;
   border-radius: 10px;
   font-weight: bold;
@@ -82,33 +84,92 @@
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.add-to-cart-button:hover {
+.add-to-cart-button:hover,
+.go-to-courses-button:hover,
+.login-to-purchase-button:hover {
   background-color: #555;
 }
 
-.add-to-cart-button:active {
+.add-to-cart-button:active,
+.go-to-courses-button:active,
+.login-to-purchase-button:active {
   transform: scale(0.95);
   background-color: #222;
 }
+.course-in-cart-button {
+  padding: 15px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  color: aliceblue;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  background-color: #555;
+}
+.back-button {
+  font-family: Roboto;
+  border-radius: 10px;
+  padding: 10px;
+  color: aliceblue;
+  background-color: #333;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+}
+.back-div {
+  margin-top: 30px;
+}
 
 @media (max-width: 768px) {
+  .course-container {
+    padding: 20px;
+  }
+
   .course-content {
     flex-direction: column;
     align-items: center; /* Center align items on smaller screens */
+    padding: 15px;
   }
 
   .course-image {
     max-width: 100%; /* Make image responsive */
     margin-right: 0; /* Reset margin */
-    margin-bottom: 20px; /* Add margin to bottom */
+    margin-bottom: 15px; /* Add margin to bottom */
+  }
+
+  .course-details {
+    text-align: center;
   }
 
   .course-title {
     font-size: 1.5rem; /* Adjust font size for smaller screens */
+    margin-bottom: 15px;
   }
 
   .course-price,
   .course-rating {
+    font-size: 1rem; /* Adjust font size for smaller screens */
     text-align: center; /* Center align text on smaller screens */
+  }
+
+  .star {
+    font-size: 20px;
+  }
+
+  .rating-label {
+    font-size: 1rem;
+  }
+
+  .add-to-cart-button,
+  .go-to-courses-button,
+  .login-to-purchase-button,
+  .course-in-cart-button,
+  .back-button {
+    padding: 10px;
+    font-size: 0.9rem; /* Adjust font size for smaller screens */
   }
 }

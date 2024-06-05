@@ -273,18 +273,4 @@ const SkeletonCartItemPrice = styled.div`
   background-color: #ccc;
 `;
 
-const pulse = `
-  @keyframes pulse {
-    0% {
-      background-color: #444;
-    }
-    50% {
-      background-color: #555;
-    }
-    100% {
-      background-color: #444;
-    }
-  }
-`;
-
 export default ShoppingCartSidebar;

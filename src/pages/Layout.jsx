@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { Outlet, useLocation } from "react-router-dom";
@@ -10,26 +9,6 @@ import CoursesSwiper from "../components/CoursesSwiper";
 const Layout = () => {
   const { pathname } = useLocation();
   const isAuthRoute = pathname.startsWith("/auth");
-
-  const [bgImage, setBgImage] = useState(null);
-
-  useEffect(() => {
-    // Fetch the background image dynamically
-    const fetchBgImage = async () => {
-      try {
-        const response = await fetch("bg-image.jpg"); // Replace "bg-image.jpg" with the path to your image
-        if (response.ok) {
-          setBgImage(`url(${response.url})`);
-        } else {
-          console.error("Failed to fetch background image");
-        }
-      } catch (error) {
-        console.error("Error fetching background image:", error);
-      }
-    };
-
-    fetchBgImage();
-  }, []);
 
   return (
     <BackgroundContainer>

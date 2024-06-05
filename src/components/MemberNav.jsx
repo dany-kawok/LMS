@@ -1,58 +1,47 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
-import { useGetLocationQuery } from "../redux/features/location/locationSlice";
+// import { useGetLocationQuery } from "../redux/features/location/locationSlice";
 import { useGetUserByIdQuery } from "../redux/features/users/usersSlice";
 import ShoppingCartSidebar from "./ShoppingCartSidebar";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode"; // Import jwtDecode correctly
+import { useSelector } from "react-redux"; // Import useSelector
+
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { logout } from "../redux/features/auth/authSlice";
+import { useDispatch } from "react-redux";
+import checkTokenExpiration from "../utils/TokenValidity";
 
 const MemberNav = () => {
-  const { data: locationData, error: locationError } = useGetLocationQuery();
-  const [time, setTime] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
 
   const accessToken = Cookies.get("accessToken");
 
-  const isTokenExpired = (token) => {
-    if (!token) return true;
-    const decodedToken = jwtDecode(token);
-    const currentTime = Date.now() / 1000;
-    return decodedToken.exp < currentTime;
-  };
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isTokenExpired(accessToken)) {
-      Cookies.remove("accessToken");
-      if (location.pathname === "/") {
-        navigate("/");
-      } else {
+    if (accessToken) {
+      const isTokenValid = checkTokenExpiration(accessToken);
+
+      if (!isTokenValid) {
+        // Token is expired
+        Cookies.remove("accessToken");
+        dispatch(logout());
         navigate("/auth/login");
       }
     }
-  }, [accessToken, location.pathname, navigate]);
+  }, [accessToken, dispatch, navigate]);
 
   const userId = accessToken ? jwtDecode(accessToken).UserInfo.id : null;
-  const { data: userData, error: userError } = useGetUserByIdQuery(userId, {
+  const { data: userData } = useGetUserByIdQuery(userId, {
     skip: !userId, // Skip the query if userId is null
   });
 
-  // Update the time every second
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setTime(now.toLocaleTimeString());
-    };
-
-    updateTime(); // Set initial time
-    const timerId = setInterval(updateTime, 1000);
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(timerId);
-  }, []);
+  const cartLength = useSelector((state) => state.sCartDetails.length); // Get cart length from Redux store
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -65,17 +54,12 @@ const MemberNav = () => {
           {userData
             ? `Welcome, ${userData.first_name} ${userData.last_name} `
             : "Welcome, Guest"}{" "}
-          | {time} |{" "}
-          {locationData
-            ? `${locationData.city}, ${locationData.country}`
-            : locationError
-            ? "Location not available"
-            : "Loading location..."}
         </WelcomeMessage>
         <NavLinks>
           <NavLink to="/dashboard">My Courses</NavLink>
           <CartIcon onClick={toggleSidebar}>
             <FaShoppingCart size={20} />
+            {cartLength > 0 && <CartIndicator>{cartLength}</CartIndicator>}
           </CartIcon>
         </NavLinks>
       </MemberNavContainer>
@@ -108,6 +92,7 @@ const NavLinks = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+  margin-right: 20px;
 `;
 
 const NavLink = styled(Link)`
@@ -120,7 +105,19 @@ const NavLink = styled(Link)`
 `;
 
 const CartIcon = styled.div`
+  position: relative;
   cursor: pointer;
+`;
+
+const CartIndicator = styled.span`
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: red;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
 `;
 
 export default MemberNav;

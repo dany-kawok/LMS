@@ -14,7 +14,19 @@ export const usersSlice = apiSlice.injectEndpoints({
       }),
       transformResponse: (response) => response.data, // Modify here to directly return data.data
     }),
+    addCourseToUser: builder.mutation({
+      query: (courseIds) => ({
+        url: `/users/courses`,
+        method: "POST",
+        body: { courseIds },
+      }),
+      transformResponse: (response) => response.data,
+    }),
   }), // Close the endpoints object here
 });
 
-export const { useGetAllUsersQuery, useGetUserByIdQuery } = usersSlice;
+export const {
+  useGetAllUsersQuery,
+  useGetUserByIdQuery,
+  useAddCourseToUserMutation,
+} = usersSlice;
