@@ -1,27 +1,41 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGetCoursesOfTheUserQuery } from "../redux/features/courses/coursesSlice";
 
 const Dashboard = () => {
+  // const location = useLocation();
   const {
     data: userCourses = [],
     isLoading,
     isError,
     refetch,
+    status,
+    error,
   } = useGetCoursesOfTheUserQuery();
-  const [loading, setLoading] = useState(isLoading);
-  const [error, setError] = useState(isError);
+  const [shouldRefetch, setShouldRefetch] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setLoading(isLoading);
-    setError(isError);
-    if (!loading && !error) {
+    if (shouldRefetch) {
       refetch();
+      setShouldRefetch(false);
     }
-  }, [isLoading, isError, refetch, loading, error]);
+  }, [shouldRefetch, refetch]);
 
-  if (loading) {
+  useEffect(() => {
+    if (!isLoading && !isError) {
+      setShouldRefetch(true);
+    }
+  }, [isLoading, isError]);
+
+  useEffect(() => {
+    if (isError && (error?.status === 401 || error?.status === 403)) {
+      navigate("/auth/login");
+    }
+  }, [isError, error, navigate]);
+
+  if (isLoading) {
     return (
       <DashboardContainer>
         <h1>Dashboard</h1>
@@ -37,7 +51,13 @@ const Dashboard = () => {
     );
   }
 
-  if (error) return <p>Error loading user courses</p>;
+  if (isError) {
+    return (
+      <p>
+        {status}::{error.status}
+      </p>
+    );
+  }
 
   return (
     <DashboardContainer>
@@ -72,10 +92,10 @@ const CourseList = styled.div`
 `;
 
 const CourseCard = styled.div`
-  background-color: #282828;
+  background-color: #555;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
   text-align: center;
   transition: transform 0.2s;
 

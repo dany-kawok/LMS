@@ -17,7 +17,6 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       Cookies.remove("accessToken");
-      // Cookies.remove("jwt");
     },
   },
 });

@@ -7,7 +7,8 @@ import {
   useClearCartMutation,
 } from "../redux/features/sCart/sCartSlice";
 
-const ShoppingCartSidebar = ({ isOpen, toggleSidebar }) => {
+// eslint-disable-next-line react/prop-types
+const ShoppingCartSidebar = ({ $isOpen, toggleSidebar }) => {
   const { data: cartItems = [], isLoading, refetch } = useGetUserCartQuery();
   const [removeFromCart] = useRemoveFromCartMutation();
   const [clearCart] = useClearCartMutation();
@@ -26,8 +27,8 @@ const ShoppingCartSidebar = ({ isOpen, toggleSidebar }) => {
 
   return (
     <>
-      <Overlay isOpen={isOpen} onClick={toggleSidebar} />
-      <SidebarContainer isOpen={isOpen}>
+      <Overlay $isOpen={$isOpen} onClick={toggleSidebar} />
+      <SidebarContainer $isOpen={$isOpen}>
         <SidebarHeader>
           <SidebarTitle>Shopping Cart</SidebarTitle>
           <CloseIcon onClick={toggleSidebar}>
@@ -77,7 +78,7 @@ const ShoppingCartSidebar = ({ isOpen, toggleSidebar }) => {
 };
 
 const Overlay = styled.div`
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
   position: fixed;
   top: 0;
   left: 0;
@@ -95,7 +96,8 @@ const SidebarContainer = styled.div`
   width: 300px;
   background-color: #666;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-  transform: ${({ isOpen }) => (isOpen ? "translateX(0)" : "translateX(100%)")};
+  transform: ${({ $isOpen }) =>
+    $isOpen ? "translateX(0)" : "translateX(100%)"};
   transition: transform 0.3s ease-in-out;
   z-index: 1000;
   display: flex;
@@ -183,62 +185,53 @@ const CartItemPrice = styled.p`
 const RemoveButton = styled.button`
   background: none;
   border: none;
-  color: white;
+  color: red;
   cursor: pointer;
-  font-size: 18px;
 `;
 
 const SidebarFooter = styled.div`
   padding: 20px;
-  border-top: 2px solid #333;
+  background-color: #333;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const TotalAmount = styled.p`
   font-size: 18px;
-  color: white;
-  margin-bottom: 20px;
+  margin: 10px 0;
 `;
 
 const CheckoutButton = styled(Link)`
-  display: block;
-  width: 100%;
-  padding: 10px;
-  background-color: #1f7fc4;
+  background-color: green;
   color: white;
-  text-align: center;
-  border: none;
-  border-radius: 5px;
-  text-decoration: none;
+  padding: 10px 20px;
   margin-bottom: 10px;
-  cursor: pointer;
+  text-decoration: none;
+  border-radius: 5px;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: darkgreen;
   }
 `;
 
 const ClearCartButton = styled.button`
-  display: block;
-  width: 100%;
-  padding: 10px;
-  background-color: #dc3545;
+  background-color: red;
   color: white;
+  padding: 10px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 
   &:hover {
-    background-color: #c82333;
+    background-color: darkred;
   }
 `;
 
 const SkeletonCartItem = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #333;
 `;
 
 const SkeletonCartItemImage = styled.div`
@@ -253,14 +246,14 @@ const SkeletonCartItemDetails = styled.div`
 `;
 
 const SkeletonCartItemTitle = styled.div`
-  width: 70%;
+  width: 60%;
   height: 20px;
   background-color: #ccc;
   margin-bottom: 10px;
 `;
 
 const SkeletonCartItemPrice = styled.div`
-  width: 50%;
+  width: 40%;
   height: 20px;
   background-color: #ccc;
 `;

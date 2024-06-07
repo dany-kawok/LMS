@@ -2,13 +2,12 @@ import { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
-// import { useGetLocationQuery } from "../redux/features/location/locationSlice";
+import { useLogoutAPIMutation } from "../redux/features/auth/authApiSlice";
 import { useGetUserByIdQuery } from "../redux/features/users/usersSlice";
 import ShoppingCartSidebar from "./ShoppingCartSidebar";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode"; // Import jwtDecode correctly
-import { useSelector } from "react-redux"; // Import useSelector
-
+import { jwtDecode } from "jwt-decode";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { logout } from "../redux/features/auth/authSlice";
@@ -17,31 +16,30 @@ import checkTokenExpiration from "../utils/TokenValidity";
 
 const MemberNav = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  // const refreshToken = Cookies.get("jwt");
   const accessToken = Cookies.get("accessToken");
-
+  const [logoutAPI] = useLogoutAPIMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (accessToken) {
-      const isTokenValid = checkTokenExpiration(accessToken);
-
-      if (!isTokenValid) {
-        // Token is expired
-        Cookies.remove("accessToken");
-        dispatch(logout());
-        navigate("/auth/login");
-      }
-    }
-  }, [accessToken, dispatch, navigate]);
+  // useEffect(() => {
+  //   if (accessToken) {
+  //     const isTokenValid = checkTokenExpiration(accessToken);
+  //     console.log(isTokenValid);
+  //     if (!isTokenValid) {
+  //       // logoutAPI();
+  //       // dispatch(logout());
+  //       navigate("/auth/login");
+  //     }
+  //   }
+  // }, [accessToken, dispatch, navigate, logoutAPI]);
 
   const userId = accessToken ? jwtDecode(accessToken).UserInfo.id : null;
   const { data: userData } = useGetUserByIdQuery(userId, {
-    skip: !userId, // Skip the query if userId is null
+    skip: !userId,
   });
 
-  const cartLength = useSelector((state) => state.sCartDetails.length); // Get cart length from Redux store
+  const cartLength = useSelector((state) => state.sCartDetails.length);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -64,7 +62,7 @@ const MemberNav = () => {
         </NavLinks>
       </MemberNavContainer>
       <ShoppingCartSidebar
-        isOpen={isSidebarOpen}
+        $isOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
       />
     </>

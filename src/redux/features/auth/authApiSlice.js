@@ -1,4 +1,5 @@
 import { apiSlice } from "../../app/api/apiSlice";
+import Cookies from "js-cookie"; // Import Cookies to manipulate cookies
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -25,8 +26,12 @@ export const authApiSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: "/auth/logout",
       }),
-    }), // Close the builder.mutation refreshAccessToken here
+    }), // Close the builder.mutation logoutAPI here
   }), // Close the endpoints object here
 });
 
-export const { useRegisterAPIMutation, useLoginAPIMutation } = authApiSlice;
+export const {
+  useRegisterAPIMutation,
+  useLoginAPIMutation,
+  useLogoutAPIMutation,
+} = authApiSlice;

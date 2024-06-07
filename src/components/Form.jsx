@@ -2,7 +2,7 @@
 import styled from "styled-components";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,31 +13,19 @@ import {
 } from "../redux/features/auth/authApiSlice";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
-import { login, logout } from "../redux/features/auth/authSlice";
+import { login } from "../redux/features/auth/authSlice";
 import { toast } from "react-hot-toast";
-import checkTokenExpiration from "../utils/TokenValidity";
+// import checkTokenExpiration from "../utils/TokenValidity";
 
 const AuthForm = ({ action }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const accessToken = Cookies.get("accessToken");
+
   const course = location.state?.course;
   const redirectTo = location.state?.from?.pathname || "/";
   const [passwordShow, setPasswordShow] = useState(false);
   const [confirmPasswordShow, setConfirmPasswordShow] = useState(false);
-
-  useEffect(() => {
-    if (accessToken) {
-      const isTokenValid = checkTokenExpiration(accessToken);
-
-      if (!isTokenValid) {
-        Cookies.remove("accessToken");
-        dispatch(logout());
-        navigate("/auth/login");
-      }
-    }
-  }, [accessToken, dispatch, navigate]);
 
   const signUpSchema = z
     .object({
