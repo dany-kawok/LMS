@@ -1,9 +1,6 @@
-/* eslint-disable react/prop-types */
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { FaTimes } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa";
-
+import { FaTimes, FaTrash } from "react-icons/fa";
 import {
   useGetUserCartQuery,
   useRemoveFromCartMutation,
@@ -14,7 +11,7 @@ const ShoppingCartSidebar = ({ isOpen, toggleSidebar }) => {
   const { data: cartItems = [], isLoading, refetch } = useGetUserCartQuery();
   const [removeFromCart] = useRemoveFromCartMutation();
   const [clearCart] = useClearCartMutation();
-  console.log(cartItems);
+
   const handleRemove = async (courseId) => {
     await removeFromCart(courseId);
     refetch();
@@ -59,7 +56,7 @@ const ShoppingCartSidebar = ({ isOpen, toggleSidebar }) => {
                   <CartItemPrice>${item.price}</CartItemPrice>
                 </CartItemDetails>
                 <RemoveButton onClick={() => handleRemove(item.courseId)}>
-                  <FaTrash /> {/* This is the delete icon */}
+                  <FaTrash />
                 </RemoveButton>
               </CartItem>
             ))
@@ -67,7 +64,9 @@ const ShoppingCartSidebar = ({ isOpen, toggleSidebar }) => {
         </SidebarContent>
         <SidebarFooter>
           <TotalAmount>Total: ${total}</TotalAmount>
-          <CheckoutButton to="/checkout">Check Out</CheckoutButton>
+          <CheckoutButton to="/checkout" onClick={toggleSidebar}>
+            Check Out
+          </CheckoutButton>
           <ClearCartButton onClick={handleClearCart}>
             Clear Cart
           </ClearCartButton>
@@ -133,14 +132,12 @@ const SidebarContent = styled.div`
   flex-grow: 1;
   overflow-y: auto;
 
-  /* Hide scrollbar for WebKit browsers */
   &::-webkit-scrollbar {
     display: none;
   }
 
-  /* Hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 `;
 
 const EmptyMessage = styled.p`
@@ -173,77 +170,75 @@ const CartItemDetails = styled.div`
 
 const CartItemTitle = styled.h3`
   margin: 0;
-  font-size: 1rem;
+  font-size: 16px;
+  color: white;
 `;
 
 const CartItemPrice = styled.p`
   margin: 0;
-  color: yellow;
+  font-size: 14px;
+  color: white;
 `;
 
 const RemoveButton = styled.button`
-  /* margin-top: 10px; */
-  /* padding: 5px 10px; */
-  width: 30px;
-  height: 30px;
-  background-color: #ff4d4d;
-  color: white;
+  background: none;
   border: none;
-  border-radius: 5px;
+  color: white;
   cursor: pointer;
-  &:hover {
-    background-color: #ff3333;
-  }
+  font-size: 18px;
 `;
 
 const SidebarFooter = styled.div`
   padding: 20px;
-  background-color: #333;
-  text-align: center;
-  flex-direction: column;
-  justify-content: center;
-  align-items: end;
+  border-top: 2px solid #333;
 `;
 
 const TotalAmount = styled.p`
-  margin: 0;
-  margin-bottom: 10px;
-  font-weight: bold;
+  font-size: 18px;
+  color: white;
+  margin-bottom: 20px;
 `;
 
 const CheckoutButton = styled(Link)`
-  display: inline-block;
-  padding: 10px 30px;
-  margin-right: 20px;
-  font-weight: bold;
-  border: 1px solid white;
-  background-color: #333;
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #1f7fc4;
   color: white;
-  text-decoration: none;
+  text-align: center;
+  border: none;
   border-radius: 5px;
+  text-decoration: none;
+  margin-bottom: 10px;
+  cursor: pointer;
+
   &:hover {
-    background-color: #555;
+    background-color: #0056b3;
   }
 `;
 
 const ClearCartButton = styled.button`
-  margin-top: 10px;
-  padding: 10px 10px;
-  background-color: #ff4d4d;
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #dc3545;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+
   &:hover {
-    background-color: #ff3333;
+    background-color: #c82333;
   }
 `;
 
-/* Skeleton Styles */
 const SkeletonCartItem = styled.div`
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
-  animation: pulse 1.5s infinite ease-in-out;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #333;
 `;
 
 const SkeletonCartItemImage = styled.div`
@@ -254,10 +249,7 @@ const SkeletonCartItemImage = styled.div`
 `;
 
 const SkeletonCartItemDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100%;
+  flex-grow: 1;
 `;
 
 const SkeletonCartItemTitle = styled.div`

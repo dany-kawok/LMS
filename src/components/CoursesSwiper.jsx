@@ -131,7 +131,7 @@ const CoursesSwiper = () => {
         <Link to="categories">
           <button className="discover-button">Discover all Categories</button>
         </Link>
-        <Link>
+        <Link to="contact-us">
           <button className="become-tutor-button">Become tutor with us</button>
         </Link>
       </div>

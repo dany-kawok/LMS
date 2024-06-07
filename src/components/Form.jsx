@@ -13,13 +13,11 @@ import {
 } from "../redux/features/auth/authApiSlice";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
-import { login } from "../redux/features/auth/authSlice"; // Import the login action
+import { login, logout } from "../redux/features/auth/authSlice";
 import { toast } from "react-hot-toast";
 import checkTokenExpiration from "../utils/TokenValidity";
 
-import { logout } from "../redux/features/auth/authSlice";
-
-const Form = ({ action }) => {
+const AuthForm = ({ action }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -34,7 +32,6 @@ const Form = ({ action }) => {
       const isTokenValid = checkTokenExpiration(accessToken);
 
       if (!isTokenValid) {
-        // Token is expired
         Cookies.remove("accessToken");
         dispatch(logout());
         navigate("/auth/login");
@@ -77,25 +74,9 @@ const Form = ({ action }) => {
     resolver: zodResolver(action === "signup" ? signUpSchema : loginSchema),
   });
 
-  const [
-    registerAPI,
-    {
-      isLoading: registerIsLoading,
-      // isError: registerIsError,
-      // isSuccess: registerIsSccess,
-      // error: registerError,
-    },
-  ] = useRegisterAPIMutation();
-  const [
-    loginAPI,
-    {
-      isLoading: loginIsLoading,
-
-      // isError: loginIsError,
-      // isSuccess: loginIsSccess,
-      // error: loginError,
-    },
-  ] = useLoginAPIMutation();
+  const [registerAPI, { isLoading: registerIsLoading }] =
+    useRegisterAPIMutation();
+  const [loginAPI, { isLoading: loginIsLoading }] = useLoginAPIMutation();
 
   const onSubmit = async (formData) => {
     try {
@@ -106,7 +87,6 @@ const Form = ({ action }) => {
           Cookies.set("accessToken", accessToken);
           dispatch(login());
           toast.success("Signed up successfully!");
-
           navigate(redirectTo, course ? { state: { course: course } } : {});
         }
       } else if (action === "login") {
@@ -116,7 +96,6 @@ const Form = ({ action }) => {
           Cookies.set("accessToken", accessToken);
           dispatch(login());
           toast.success("Signed in successfully!");
-
           navigate(redirectTo, course ? { state: { course: course } } : {});
         }
       }
@@ -190,7 +169,6 @@ const Form = ({ action }) => {
         {errors.confirmPassword && (
           <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
         )}
-        {console.log(loginIsLoading)}
         <SubmitBtn disabled={loginIsLoading || registerIsLoading}>
           {loginIsLoading || registerIsLoading
             ? "Processing..."
@@ -204,24 +182,14 @@ const Form = ({ action }) => {
         {action === "signup" ? (
           <span>
             Already a member?{" "}
-            <Link
-              to="/auth/login"
-              onClick={() => {
-                reset();
-              }}
-            >
+            <Link to="/auth/login" onClick={() => reset()}>
               Sign In
             </Link>
           </span>
         ) : (
           <span>
             Not a member yet?{" "}
-            <Link
-              to="/auth/signup"
-              onClick={() => {
-                reset();
-              }}
-            >
+            <Link to="/auth/signup" onClick={() => reset()}>
               Sign Up
             </Link>
           </span>
@@ -238,9 +206,9 @@ const FormContainer = styled.form`
   flex-direction: column;
   gap: 10px;
   margin-top: 10px;
-  width: 85%; /* Initially set to 75% */
+  width: 85%;
   @media (min-width: 768px) {
-    width: 70%; /* For screens wider than 768px */
+    width: 70%;
   }
 `;
 
@@ -330,4 +298,4 @@ const ErrorMessage = styled.span`
   font-size: 0.7rem;
 `;
 
-export default Form;
+export default AuthForm;

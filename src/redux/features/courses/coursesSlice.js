@@ -28,11 +28,12 @@ export const coursesSlice = apiSlice.injectEndpoints({
       query: () => ({
         url: `/users/courses`,
       }),
-      transformResponse: (response) => {
-        const courses = response.data.courses;
-        // Ensure the response is always an array
-        return Array.isArray(courses) ? courses : [courses];
-      },
+      transformResponse: (response) => response.data,
+      // {
+      //   const courses = response.data.courses;
+      //   // Ensure the response is always an array
+      //   return Array.isArray(courses) ? courses : [courses];
+      // }
     }),
     searchCourse: builder.query({
       query: (searchText) => ({

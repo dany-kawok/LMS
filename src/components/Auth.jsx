@@ -2,32 +2,9 @@ import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Form from "./Form";
 
-// import { useNavigate } from "react-router-dom";
-// import { useEffect } from "react";
-// import { logout } from "../redux/features/auth/authSlice";
-// import { useDispatch } from "react-redux";
-// import checkTokenExpiration from "../utils/TokenValidity";
-// import Cookies from "js-cookie";
 const Auth = () => {
   const location = useLocation();
   const action = location.pathname.includes("login") ? "login" : "signup";
-
-  // const accessToken = Cookies.get("accessToken");
-
-  // const navigate = useNavigate();
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     const isTokenValid = checkTokenExpiration(accessToken);
-
-  //     if (!isTokenValid) {
-  //       // Token is expired
-  //       Cookies.remove("accessToken");
-  //       dispatch(logout());
-  //       navigate("/auth/login");
-  //     }
-  //   }
-  // }, [accessToken, dispatch, navigate]);
 
   return (
     <Container className="container">

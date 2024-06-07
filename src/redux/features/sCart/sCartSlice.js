@@ -1,4 +1,3 @@
-// src/redux/features/sCart/sCartSlice.js
 import { apiSlice } from "../../app/api/apiSlice";
 import { setCartLength } from "./sCartDetails";
 import { setUserCourses } from "../users/userCoursesSlice";
@@ -8,6 +7,7 @@ export const sCartSlice = apiSlice.injectEndpoints({
     getUserCart: builder.query({
       query: () => "/scart",
       transformResponse: (response) => response.data,
+      providesTags: ["Cart"],
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
@@ -24,11 +24,11 @@ export const sCartSlice = apiSlice.injectEndpoints({
         body: { courseId },
       }),
       transformResponse: (response) => response.data,
+      invalidatesTags: ["Cart"],
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
           dispatch(setCartLength(data.length));
-          // Fetch and update user courses
           const userCoursesResponse = await dispatch(
             apiSlice.endpoints.getCoursesOfTheUser.initiate()
           ).unwrap();
@@ -45,11 +45,11 @@ export const sCartSlice = apiSlice.injectEndpoints({
         body: { courseId },
       }),
       transformResponse: (response) => response.data,
+      invalidatesTags: ["Cart"],
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
           dispatch(setCartLength(data.length));
-          // Fetch and update user courses
           const userCoursesResponse = await dispatch(
             apiSlice.endpoints.getCoursesOfTheUser.initiate()
           ).unwrap();
@@ -65,11 +65,11 @@ export const sCartSlice = apiSlice.injectEndpoints({
         method: "DELETE",
       }),
       transformResponse: (response) => response.data,
+      invalidatesTags: ["Cart"],
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
           dispatch(setCartLength(data.length));
-          // Fetch and update user courses
           const userCoursesResponse = await dispatch(
             apiSlice.endpoints.getCoursesOfTheUser.initiate()
           ).unwrap();

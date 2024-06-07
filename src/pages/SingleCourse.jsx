@@ -13,13 +13,11 @@ const SingleCourse = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const course = location.state?.course;
-  console.log(course);
   const [addToCart] = useAddToCartMutation();
   const { data: cartItems = [], refetch: refetchCart } = useGetUserCartQuery();
   const { data: userCourses = [], refetch: refetchCourses } =
     useGetCoursesOfTheUserQuery();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
   const handleAddToCart = async () => {
     if (!cartItems.some((item) => item.courseId === course._id)) {
       await addToCart(course._id);
@@ -68,7 +66,7 @@ const SingleCourse = () => {
   };
 
   const isCourseInUserCourses = userCourses.some(
-    (userCourse) => userCourse === course._id
+    (userCourse) => userCourse._id === course._id
   );
   const isCourseInCart = cartItems.some((item) => item.courseId === course._id);
 

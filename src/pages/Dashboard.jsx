@@ -1,20 +1,27 @@
-import {
-  useGetCoursesOfTheUserQuery,
-  useGetCoursesCollectionQuery,
-} from "../redux/features/courses/coursesSlice";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useGetCoursesOfTheUserQuery } from "../redux/features/courses/coursesSlice";
 
 const Dashboard = () => {
-  const { data: userCoursesIds = [] } = useGetCoursesOfTheUserQuery();
-  console.log(userCoursesIds);
   const {
     data: userCourses = [],
     isLoading,
     isError,
-  } = useGetCoursesCollectionQuery(userCoursesIds);
-  console.log(userCourses);
-  if (isLoading) {
+    refetch,
+  } = useGetCoursesOfTheUserQuery();
+  const [loading, setLoading] = useState(isLoading);
+  const [error, setError] = useState(isError);
+
+  useEffect(() => {
+    setLoading(isLoading);
+    setError(isError);
+    if (!loading && !error) {
+      refetch();
+    }
+  }, [isLoading, isError, refetch, loading, error]);
+
+  if (loading) {
     return (
       <DashboardContainer>
         <h1>Dashboard</h1>
@@ -30,7 +37,7 @@ const Dashboard = () => {
     );
   }
 
-  if (isError) return <p>Error loading user courses</p>;
+  if (error) return <p>Error loading user courses</p>;
 
   return (
     <DashboardContainer>
@@ -52,8 +59,6 @@ const Dashboard = () => {
     </DashboardContainer>
   );
 };
-
-export default Dashboard;
 
 const DashboardContainer = styled.div`
   padding: 20px;
@@ -91,7 +96,6 @@ const CourseName = styled.h2`
   color: #fff;
 `;
 
-// Skeleton components
 const SkeletonCourseCard = styled.div`
   background-color: #333;
   border-radius: 10px;
@@ -117,3 +121,5 @@ const SkeletonCourseName = styled.div`
   background-color: #444;
   margin-top: 10px;
 `;
+
+export default Dashboard;

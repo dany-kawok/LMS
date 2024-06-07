@@ -18,9 +18,9 @@ const Header = () => {
   const links = [
     { title: "Home", link: "/" },
     { title: "Categories", link: "/categories" },
-    { title: "Courses", link: "/courses" },
+    { title: "Courses", link: "/allCourses" },
     { title: "Tutors", link: "/tutors" },
-    { title: "Contact", link: "/contact" },
+    { title: "Contact", link: "/contact-us" },
   ];
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const Header = () => {
                     dispatch(logout());
                     toast.success("Signed out successfully!");
 
-                    console.log("Logged out successfully");
+                    // console.log("Logged out successfully");
                   } else {
                     console.error("Failed to log out");
                     toast.error("Failed to log out.");
